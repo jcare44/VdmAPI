@@ -7,10 +7,12 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Goutte\Client;
-use AppBundle\Entity\Post;
+use AppBundle\Parser\VdmPageParser;
 
 class ScrapingCommand extends ContainerAwareCommand
 {
+    const NUMBER_OF_POSTS = 200;
+
     protected function configure()
     {
         $this
@@ -20,7 +22,6 @@ class ScrapingCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        //$logger = $this->getContainer()->get('logger');
         $em = $this->getContainer()->get('doctrine')->getEntityManager();
 
         $output->writeln('Scraping...');
@@ -28,21 +29,16 @@ class ScrapingCommand extends ContainerAwareCommand
         $client = new Client();
         $numberOfPosts = 0;
         $pageNumber = 0;
-        while($numberOfPosts < 200) {
+        while($numberOfPosts < self::NUMBER_OF_POSTS) {
             $output->writeln('Page '.$pageNumber);
             $crawler = $client->request('GET', 'http://www.viedemerde.fr/?page='.$pageNumber++);
-            $crawler->filter('.post.article')->each(function($node) use($em, &$numberOfPosts) {
-                $additionalInfos = $node->filter('.date > .right_part > p:nth-child(2)')->text();
+            $posts = (new VdmPageParser($crawler))->getPosts();
 
-                $post = new Post();
-                $post->setId($node->attr('id'))
-                    ->setContent($node->filter('p')->text())
-                    ->setAuthor(preg_replace('/^.*?\- par ([^(]+)\(?.*$/', '$1', $additionalInfos))
-                    ->setPublishedAt(\DateTime::createFromFormat('d/m/Y', preg_replace('/^Le ([0-9\/]+).*$/', '$1', $additionalInfos)));
-                $em->persist($post);
-
-                ++$numberOfPosts;
-            });
+            $i = 0;
+            $length = count($posts);
+            while($i < $length && $numberOfPosts++ < self::NUMBER_OF_POSTS) {
+                $em->persist($posts[$i++]);
+            }
         }
         $em->flush();
 
