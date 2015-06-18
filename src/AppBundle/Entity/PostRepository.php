@@ -27,4 +27,14 @@ class PostRepository extends EntityRepository
             ->setMaxResults(100)
          	->getResult();
     }
+
+    /**
+     * Delete all posts in the DB
+     */
+    public function deleteAll() {
+        return $this->getEntityManager()
+			->createQuery('
+				DELETE AppBundle\Entity\Post p')
+         	->getScalarResult();
+    }
 }
