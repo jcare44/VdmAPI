@@ -32,7 +32,7 @@ class ScrapingCommand extends ContainerAwareCommand
         while($numberOfPosts < self::NUMBER_OF_POSTS) {
             $output->writeln('Page '.$pageNumber);
             $crawler = $client->request('GET', 'http://www.viedemerde.fr/?page='.$pageNumber++);
-            $posts = (new VdmPageParser($crawler))->getPosts();
+            $posts = VdmPageParser::getPosts($crawler);
 
             $i = 0;
             $length = count($posts);
