@@ -3,12 +3,14 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Swagger\Annotations as SWG;
 
 /**
  * Post
  *
  * @ORM\Table()
  * @ORM\Entity(repositoryClass="AppBundle\Entity\PostRepository")
+ * @SWG\Model(id="Post")
  */
 class Post implements \JsonSerializable
 {
@@ -17,6 +19,7 @@ class Post implements \JsonSerializable
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
+     * @SWG\Property(name="id", type="int")
      */
     private $id;
 
@@ -24,6 +27,7 @@ class Post implements \JsonSerializable
      * @var string
      *
      * @ORM\Column(name="content", type="text")
+     * @SWG\Property(name="content", type="string")
      */
     private $content;
 
@@ -31,6 +35,7 @@ class Post implements \JsonSerializable
      * @var \DateTime
      *
      * @ORM\Column(name="publishedAt", type="datetime")
+     * @SWG\Property(name="publishedAt", type="datetime")
      */
     private $publishedAt;
 
@@ -38,6 +43,7 @@ class Post implements \JsonSerializable
      * @var string
      *
      * @ORM\Column(name="author", type="string", length=255)
+     * @SWG\Property(name="author", type="string")
      */
     private $author;
 
