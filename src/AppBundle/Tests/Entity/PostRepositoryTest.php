@@ -2,6 +2,7 @@
 namespace Acme\StoreBundle\Tests\Entity;
 
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use AppBundle\DataFixtures\ORM\LoadPostData;
 
 class PostRepositoryTest extends KernelTestCase
 {
@@ -22,6 +23,25 @@ class PostRepositoryTest extends KernelTestCase
         ;
     }
 
+    public function testDeleteAll()
+    {
+        $this->em
+            ->getRepository('AppBundle:Post')
+            ->deleteAll();
+
+        $posts = $this->em
+            ->getRepository('AppBundle:Post')
+            ->findAll();
+
+        $this->assertEquals(0, count($posts));
+
+        //Load fixtures for next tests
+        (new LoadPostData())->load($this->em);
+    }
+
+    /**
+     * @depends testDeleteAll
+     */
     public function testFindByPage()
     {
         $posts = $this->em
