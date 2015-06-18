@@ -12,4 +12,19 @@ use Doctrine\ORM\EntityRepository;
  */
 class PostRepository extends EntityRepository
 {
+    /**
+     * Find all the posts by set of 100
+     *
+     * @param  integer $pageNumber The number of the page of data (first at 1)
+     * @return Post[]              The resulting array of Posts
+     */
+    public function findByPage($pageNumber = 1) {
+        return $this->getEntityManager()
+			->createQuery('
+				SELECT p
+				FROM AppBundle\Entity\Post p')
+            ->setFirstResult(100*($pageNumber-1))
+            ->setMaxResults(100)
+         	->getResult();
+    }
 }

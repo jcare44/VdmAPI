@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table()
  * @ORM\Entity(repositoryClass="AppBundle\Entity\PostRepository")
  */
-class Post
+class Post implements \JsonSerializable
 {
     /**
      * @var integer
@@ -40,6 +40,16 @@ class Post
      * @ORM\Column(name="author", type="string", length=255)
      */
     private $author;
+
+
+    public function jsonSerialize() {
+        return array(
+            'id' => $this->id,
+            'content' => $this->content,
+            'author' => $this->author,
+            'publishedAt' => $this->publishedAt->format('Y-m-d H:i:s')
+        );
+    }
 
 
     /**
