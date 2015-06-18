@@ -30,7 +30,7 @@ class VdmPageParser {
         $post->setId($node->attr('id'))
             ->setContent($node->filter('p')->text())
             ->setAuthor(trim(preg_replace('/^.*?\- par ([^(]+)\(?.*$/', '$1', $additionalInfos)))
-            ->setPublishedAt(\DateTime::createFromFormat('d/m/Y', preg_replace('/^Le ([0-9\/]+).*$/', '$1', $additionalInfos)));
+            ->setPublishedAt(\DateTime::createFromFormat('d/m/Y H:i:s', preg_replace('/^Le ([0-9\/]+) à ([0-9\:]{5}).*$/', '$1 $2:00', $additionalInfos)));
 
         return $post;
     }
